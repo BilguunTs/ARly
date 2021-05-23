@@ -1,28 +1,18 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 
 import {SafeAreaView, StatusBar, Text, useColorScheme} from 'react-native';
-
+import {ViroScene, ViroText, ViroCamera} from '@viro-community/react-viro';
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Text> hello </Text>
+      <ViroScene>
+        <ViroCamera position={[-1, 0, 0]} active={true} />
+        <ViroText text="Hello!" position={[-1, 0, -1]} />
+      </ViroScene>
     </SafeAreaView>
   );
 };
-
 export default App;
