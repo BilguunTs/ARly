@@ -1,18 +1,75 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {StyleSheet} from 'react-native';
+import {
+  ViroARScene,
+  ViroText,
+  ViroConstants,
+  ViroARPlaneSelector,
+  ViroARSceneNavigator,
+} from '@viro-community/react-viro';
 
-import {SafeAreaView, StatusBar, Text, useColorScheme} from 'react-native';
-import {ViroScene, ViroText, ViroCamera} from '@viro-community/react-viro';
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+class HelloWorldSceneAR extends Component {
+  constructor(props) {
+    super(props);
+    // Set initial state here
+    this.state = {
+      text: 'Ачааллаж байна AR...',
+    };
+    // bind 'this' to functions
+    this._onInitialized = this._onInitialized.bind(this);
+  }
 
-  return (
-    <SafeAreaView>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ViroScene>
-        <ViroCamera position={[-1, 0, 0]} active={true} />
-        <ViroText text="Hello!" position={[-1, 0, -1]} />
-      </ViroScene>
-    </SafeAreaView>
-  );
-};
-export default App;
+  render() {
+    return (
+      <ViroARScene onTrackingUpdated={this._onInitialized}>
+        <ViroARPlaneSelector></ViroARPlaneSelector>
+        <ViroText
+          text={this.state.text}
+          scale={[0.5, 0.5, 0.5]}
+          position={[0, 0, -1]}
+          style={styles.helloWorldTextStyle}
+        />
+        <ViroText
+          text={this.state.text}
+          scale={[0.2, 0.2, 0.2]}
+          position={[0, 0, -2]}
+          style={styles.helloWorldTextStyle}
+        />
+      </ViroARScene>
+    );
+  }
+
+  _onInitialized(state, reason) {
+    if (state == ViroConstants.TRACKING_NORMAL) {
+      this.setState({
+        text: 'Сайн уу!',
+      });
+    } else if (state == ViroConstants.TRACKING_NONE) {
+      // Handle loss of tracking
+    }
+  }
+}
+
+var styles = StyleSheet.create({
+  helloWorldTextStyle: {
+    fontFamily: 'Arial',
+    fontSize: 30,
+    color: '#ffffff',
+    textAlignVertical: 'center',
+    textAlign: 'center',
+  },
+});
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <ViroARSceneNavigator
+        autofocus={true}
+        initialScene={{
+          scene: HelloWorldSceneAR,
+        }}
+        style={{flex: 1}}
+      />
+    );
+  }
+}
